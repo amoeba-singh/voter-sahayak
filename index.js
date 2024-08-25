@@ -59,5 +59,5 @@ app.post("/webhook", (req, res) => {
 });
 
 app.get("/", (req, res)=>{
-    res.status(200).send("Hello guys");
+    res.status(200).send("Hello guys, get at root");
 })
