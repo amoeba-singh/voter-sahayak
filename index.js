@@ -30,7 +30,11 @@ app.post("/webhook", (req, res) => {
     let body_param = req.body;
 
     if (body_param.object) {
-        if (body_param.entry && body_param.entry[0].changes && body_param.entry[0].changes[0].value.messages && body_param.entry[0].changes[0].value.messages[0]) {
+        if (body_param.entry && 
+            body_param.entry[0].changes && 
+            body_param.entry[0].changes[0].value.messages && 
+            body_param.entry[0].changes[0].value.messages[0])
+        {
             let ph_no_id = body_param.entry[0].changes[0].value.metadata.phone_number_id;
             let from = body_param.entry[0].changes[0].value.messages[0].from;
             let msg_body = body_param.entry[0].changes[0].value.messages[0].text.body;
@@ -48,7 +52,7 @@ app.post("/webhook", (req, res) => {
                 headers: {
                     "Content-Type": "application/json"
                 }
-            })
+            });
 
             res.sendStatus(200);
         }
@@ -60,4 +64,4 @@ app.post("/webhook", (req, res) => {
 
 app.get("/", (req, res)=>{
     res.status(200).send("Hello guys, get at root");
-})
+});
