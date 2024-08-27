@@ -55,7 +55,7 @@ app.post("/webhook", (req, res) => {
                     "Content-Type": "application/json"
                 }
             });
-
+            console.log(ph_no_id, " ", from, " ", msg_body);
             res.sendStatus(200);
         }
         else{
