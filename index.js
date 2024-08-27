@@ -27,6 +27,8 @@ app.get("/webhook", (req, res) => {
 });
 
 app.post("/webhook", (req, res) => {
+    console.log("POST request received at /webhook");
+
     let body_param = req.body;
 
     if (body_param.object) {
@@ -59,6 +61,10 @@ app.post("/webhook", (req, res) => {
         else{
             res.sendStatus(404);
         }
+    }
+    else {
+        console.log("Object not found in request");
+        res.sendStatus(404);
     }
 });
 
