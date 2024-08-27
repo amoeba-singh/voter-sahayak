@@ -21,7 +21,7 @@ app.get("/webhook", (req, res) => {
             res.status(200).send(challenge);
         }
         else {
-            res.state(403);
+            res.status(403);
         }
     }
 });
