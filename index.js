@@ -28,6 +28,7 @@ app.get("/webhook", (req, res) => {
 
 app.post("/webhook", (req, res) => {
     console.log("POST request received at /webhook");
+    console.log("Request body:", JSON.stringify(req.body, null, 2));
 
     let body_param = req.body;
 
