@@ -44,12 +44,28 @@ app.post("/webhook", (req, res) => {
 
             axios({
                 method: "post",
-                url: "https://graph.facebook.com/v20.0/" + ph_no_id + "/messages?access_token=" + token,
+                url: `https://graph.facebook.com/v20.0/${ph_no_id}/messages?access_token=${token}`,
                 data: {
                     messaging_product: "whatsapp",
                     to: from,
-                    text:{
-                        body: "Hii, there" + msg_body
+                    type: "template",
+                    template: {
+                        name: "hello_world",
+                        language: {
+                            code: "en_US" // Make sure to use the appropriate language code
+                        }
+                        // Add 'components' if your template requires variables
+                        // components: [
+                        //     {
+                        //         type: "body",
+                        //         parameters: [
+                        //             {
+                        //                 type: "text",
+                        //                 text: "Your text here"
+                        //             }
+                        //         ]
+                        //     }
+                        // ]
                     }
                 },
                 headers: {
@@ -57,10 +73,10 @@ app.post("/webhook", (req, res) => {
                 }
             })
             .then(response => {
-                console.log("Message sent successfully:", response.data);
+                console.log("Template message sent successfully:", response.data);
             })
             .catch(error => {
-                console.error("Error sending message:", error.response ? error.response.data : error.message);
+                console.error("Error sending template message:", error.response ? error.response.data : error.message);
             });
             console.log(ph_no_id, " ", from, " ", msg_body);
             res.sendStatus(200);
