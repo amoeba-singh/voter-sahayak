@@ -55,6 +55,12 @@ app.post("/webhook", (req, res) => {
                 headers: {
                     "Content-Type": "application/json"
                 }
+            })
+            .then(response => {
+                console.log("Message sent successfully:", response.data);
+            })
+            .catch(error => {
+                console.error("Error sending message:", error.response ? error.response.data : error.message);
             });
             console.log(ph_no_id, " ", from, " ", msg_body);
             res.sendStatus(200);
