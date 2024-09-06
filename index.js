@@ -114,7 +114,7 @@ app.post("/webhook", (req, res) => {
                             {
                                 type: "button",
                                 sub_type: "quick_reply",
-                                index: 0,
+                                index: 1,
                                 parameters: [
                                     {
                                         type: "text",
