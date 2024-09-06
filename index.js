@@ -98,31 +98,31 @@ app.post("/webhook", (req, res) => {
                         name: "welcome_msg",
                         language: {
                             code: "en"
-                        },
-                        components: [
-                            {
-                                type: "button",
-                                sub_type: "quick_reply",
-                                index: 0,
-                                parameters: [
-                                    {
-                                        type: "text",
-                                        text: "Yes"
-                                    }
-                                ]
-                            },
-                            {
-                                type: "button",
-                                sub_type: "quick_reply",
-                                index: 1,
-                                parameters: [
-                                    {
-                                        type: "text",
-                                        text: "No"
-                                    }
-                                ]
-                            }
-                        ]
+                        }
+                        // components: [
+                        //     {
+                        //         type: "button",
+                        //         sub_type: "quick_reply",
+                        //         index: 0,
+                        //         parameters: [
+                        //             {
+                        //                 type: "text",
+                        //                 text: "Yes"
+                        //             }
+                        //         ]
+                        //     },
+                        //     {
+                        //         type: "button",
+                        //         sub_type: "quick_reply",
+                        //         index: 1,
+                        //         parameters: [
+                        //             {
+                        //                 type: "text",
+                        //                 text: "No"
+                        //             }
+                        //         ]
+                        //     }
+                        // ]
                     }
 
 
