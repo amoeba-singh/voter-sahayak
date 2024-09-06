@@ -11,6 +11,40 @@ app.listen(process.env.PORT, () => {
     console.log("webhook is working");
 });
 
+
+// function to send msg
+// async function sendMessage(templateName, to) {
+//     try {
+//         await axios.post(
+//             `https://graph.facebook.com/v16.0/${process.env.PHONE_NUMBER_ID}/messages`,
+//             {
+//                 messaging_product: "whatsapp",
+//                 to: to,
+//                 type: "template",
+//                 template: {
+//                     name: templateName,
+//                     language: {
+//                         code: "en_US",
+//                     },
+//                 },
+//             },
+//             {
+//                 headers: {
+//                     Authorization: `Bearer ${token}`,
+//                     "Content-Type": "application/json",
+//                 },
+//             }
+//         );
+//     } catch (error) {
+//         console.error("Error sending message:", error);
+//     }
+// }
+
+
+
+
+
+// get request
 app.get("/webhook", (req, res) => {
     let mode = req.query["hub.mode"];
     let challenge = req.query["hub.challenge"];
@@ -26,6 +60,8 @@ app.get("/webhook", (req, res) => {
     }
 });
 
+
+// post request to send msg
 app.post("/webhook", (req, res) => {
     console.log("POST request received at /webhook");
     console.log("Request body:", JSON.stringify(req.body, null, 2));
@@ -33,11 +69,10 @@ app.post("/webhook", (req, res) => {
     let body_param = req.body;
 
     if (body_param.object) {
-        if (body_param.entry && 
-            body_param.entry[0].changes && 
-            body_param.entry[0].changes[0].value.messages && 
-            body_param.entry[0].changes[0].value.messages[0])
-        {
+        if (body_param.entry &&
+            body_param.entry[0].changes &&
+            body_param.entry[0].changes[0].value.messages &&
+            body_param.entry[0].changes[0].value.messages[0]) {
             let ph_no_id = body_param.entry[0].changes[0].value.metadata.phone_number_id;
             let from = body_param.entry[0].changes[0].value.messages[0].from;
             let msg_body = body_param.entry[0].changes[0].value.messages[0].text.body;
@@ -46,42 +81,66 @@ app.post("/webhook", (req, res) => {
                 method: "post",
                 url: `https://graph.facebook.com/v20.0/${ph_no_id}/messages?access_token=${token}`,
                 data: {
+                    // messaging_product: "whatsapp",
+                    // to: from,
+                    // type: "template",
+                    // template: {
+                    //     name: "hello_world",
+                    //     language: {
+                    //         code: "en_US" // Make sure to use the appropriate language code
+                    //     }
+                    // }
+
                     messaging_product: "whatsapp",
                     to: from,
                     type: "template",
                     template: {
-                        name: "hello_world",
+                        name: "welcome_msg",
                         language: {
-                            code: "en_US" // Make sure to use the appropriate language code
-                        }
-                        // Add 'components' if your template requires variables
-                        // components: [
-                        //     {
-                        //         type: "body",
-                        //         parameters: [
-                        //             {
-                        //                 type: "text",
-                        //                 text: "Your text here"
-                        //             }
-                        //         ]
-                        //     }
-                        // ]
+                            code: "en"
+                        },
+                        components: [
+                            {
+                                type: "button",
+                                sub_type: "quick_reply",
+                                index: 0,
+                                parameters: [
+                                    {
+                                        type: "text",
+                                        text: "Yes"
+                                    }
+                                ]
+                            },
+                            {
+                                type: "button",
+                                sub_type: "quick_reply",
+                                index: 0,
+                                parameters: [
+                                    {
+                                        type: "text",
+                                        text: "No"
+                                    }
+                                ]
+                            }
+                        ]
                     }
+
+
                 },
                 headers: {
                     "Content-Type": "application/json"
                 }
             })
-            .then(response => {
-                console.log("Template message sent successfully:", response.data);
-            })
-            .catch(error => {
-                console.error("Error sending template message:", error.response ? error.response.data : error.message);
-            });
+                .then(response => {
+                    console.log("Template message sent successfully:", response.data);
+                })
+                .catch(error => {
+                    console.error("Error sending template message:", error.response ? error.response.data : error.message);
+                });
             console.log(ph_no_id, " ", from, " ", msg_body);
             res.sendStatus(200);
         }
-        else{
+        else {
             res.sendStatus(404);
         }
     }
@@ -91,6 +150,8 @@ app.post("/webhook", (req, res) => {
     }
 });
 
-app.get("/", (req, res)=>{
+
+// get request at root
+app.get("/", (req, res) => {
     res.status(200).send("Hello guys, get at root");
 });
