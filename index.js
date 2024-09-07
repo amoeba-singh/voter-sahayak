@@ -7,7 +7,7 @@ const app = express().use(body_parser.json());
 const token = process.env.TOKEN;
 const myToken = process.env.MYTOKEN;
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
     console.log("webhook is working");
 });
 
@@ -110,7 +110,7 @@ app.post("/webhook", (req, res) => {
                 headers: {
                     "Content-Type": "application/json"
                 }
-                
+
             })
                 .then(response => {
                     console.log("Template message sent successfully:", response.data);
