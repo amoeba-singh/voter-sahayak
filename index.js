@@ -7,7 +7,7 @@ const app = express().use(body_parser.json());
 const token = process.env.TOKEN;
 const myToken = process.env.MYTOKEN;
 
-app.listen(process.env.PORT, () => {
+app.listen(3000, () => {
     console.log("webhook is working");
 });
 
@@ -91,45 +91,26 @@ app.post("/webhook", (req, res) => {
                     //     }
                     // }
 
+                    // messaging_product: "whatsapp",
+                    // to: from,
+                    // type: "template",
+                    // template: {
+                    //     name: "welcome_msg",
+                    //     language: {
+                    //         code: "en"
+                    //     }
+                    // }
+
                     messaging_product: "whatsapp",
                     to: from,
-                    type: "template",
-                    template: {
-                        name: "welcome_msg",
-                        language: {
-                            code: "en"
-                        }
-                        // components: [
-                        //     {
-                        //         type: "button",
-                        //         sub_type: "quick_reply",
-                        //         index: 0,
-                        //         parameters: [
-                        //             {
-                        //                 type: "text",
-                        //                 text: "Yes"
-                        //             }
-                        //         ]
-                        //     },
-                        //     {
-                        //         type: "button",
-                        //         sub_type: "quick_reply",
-                        //         index: 1,
-                        //         parameters: [
-                        //             {
-                        //                 type: "text",
-                        //                 text: "No"
-                        //             }
-                        //         ]
-                        //     }
-                        // ]
+                    text: {
+                        body: "Greetings Dear Voter 😊\nWelcome to Voter सहायक, A WhatsApp Chatbot launched by District Election Officer, South West for making voter experience absolutely hassle- free.\nPlease choose your language of preference.\nप्रिय मतदाता, नमस्ते 😊\nवोटर सहायक में आपका स्वागत है, जिसे दक्षिण पश्चिम के जिला चुनाव अधिकारी द्वारा शुरू किया गया है ताकि आपके मतदाता अनुभव को बिल्कुल परेशानी मुक्त बनाया जा सके।\nकृपया अपनी पसंद की भाषा चुनें।"
                     }
-
-
                 },
                 headers: {
                     "Content-Type": "application/json"
                 }
+                
             })
                 .then(response => {
                     console.log("Template message sent successfully:", response.data);
