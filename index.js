@@ -102,7 +102,7 @@ app.post("/webhook", async (req, res) => {
             try {
                 switch (userState[from].stage) {
                     case "initial":
-                        if (receivedMessage.includes("hello") || receivedMessage.includes("hi")) {
+                        if (receivedMessage == "hi") {
                             await sendMessage("welcome_msg", from);
                         }
 
