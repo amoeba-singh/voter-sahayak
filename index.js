@@ -369,10 +369,10 @@ app.post("/webhook", async (req, res) => {
                             else if (userState[from].language === "H") {
                                 await sendMessage("hindi_remenu", from, [
                                     { payload: "remenu_hin" }
-                                ]); // Remenu Hindi
+                                ], "hi"); // Remenu Hindi
                             }
 
-                        }, 2000);
+                        }, 500);
 
                         userState[from].stage = "initial";
                         break;
@@ -406,7 +406,7 @@ app.post("/webhook", async (req, res) => {
                             else if (userState[from].language === "H") {
                                 await sendMessage("hindi_remenu", from, [
                                     { payload: "remenu_hin" }
-                                ]); // Remenu Hindi
+                                ], "hi"); // Remenu Hindi
                             }
                         }, 2000);
 
