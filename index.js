@@ -38,11 +38,8 @@ async function sendText(txt, to) {
 }
 
 
-
-
-
 // function to send template
-async function sendMessage(templateName, to, buttons = []) {
+async function sendMessage(templateName, to, buttons = [], lang = "us") {
     try {
 
         const buttonArray = buttons.map((button, index) => ({
@@ -64,7 +61,7 @@ async function sendMessage(templateName, to, buttons = []) {
             template: {
                 name: templateName,
                 language: {
-                    code: "en"
+                    code: lang
                 },
                 components: buttonArray
             }
@@ -148,7 +145,7 @@ app.post("/webhook", async (req, res) => {
                                     { payload: "hkyo" },
                                     { payload: "hsvl" },
                                     { payload: "hvh" }
-                                ]); // Hindi Menu
+                                ], "hi"); // Hindi Menu
                                 break;
 
                             case "remenu_eng":
@@ -176,7 +173,7 @@ app.post("/webhook", async (req, res) => {
                                     { payload: "hkyo" },
                                     { payload: "hsvl" },
                                     { payload: "hvh" }
-                                ]); // Hindi Menu
+                                ], "hi"); // Hindi Menu
                                 break;
 
 
@@ -272,7 +269,7 @@ app.post("/webhook", async (req, res) => {
                                 setTimeout(async () => {
                                     await sendMessage("hindi_remenu", from, [
                                         { payload: "remenu_hin" }
-                                    ]); // Remenu with 500ms delay
+                                    ], "hi"); // Remenu with 500ms delay
                                 }, 500);
                                 break;
 
@@ -281,7 +278,7 @@ app.post("/webhook", async (req, res) => {
                                 setTimeout(async () => {
                                     await sendMessage("hindi_remenu", from, [
                                         { payload: "remenu_hin" }
-                                    ]); //hindi Remenu with 500ms delay
+                                    ], "hi"); //hindi Remenu with 500ms delay
                                 }, 500);
                                 break;
 
@@ -290,7 +287,7 @@ app.post("/webhook", async (req, res) => {
                                 setTimeout(async () => {
                                     await sendMessage("hindi_remenu", from, [
                                         { payload: "remenu_hin" }
-                                    ]); //hindi Remenu with 500ms delay
+                                    ], "hi"); //hindi Remenu with 500ms delay
                                 }, 500);
                                 break;
 
@@ -299,7 +296,7 @@ app.post("/webhook", async (req, res) => {
                                 setTimeout(async () => {
                                     await sendMessage("hindi_remenu", from, [
                                         { payload: "remenu_hin" }
-                                    ]); //hindi Remenu with 500ms delay
+                                    ], "hi"); //hindi Remenu with 500ms delay
                                 }, 500);
                                 break;
 
@@ -308,7 +305,7 @@ app.post("/webhook", async (req, res) => {
                                 setTimeout(async () => {
                                     await sendMessage("hindi_remenu", from, [
                                         { payload: "remenu_hin" }
-                                    ]); //hindi Remenu with 500ms delay
+                                    ], "hi"); //hindi Remenu with 500ms delay
                                 }, 500);
                                 break;
 
@@ -317,7 +314,7 @@ app.post("/webhook", async (req, res) => {
                                 setTimeout(async () => {
                                     await sendMessage("hindi_remenu", from, [
                                         { payload: "remenu_hin" }
-                                    ]); //hindi Remenu with 500ms delay
+                                    ], "hi"); //hindi Remenu with 500ms delay
                                 }, 500);
                                 break;
 
@@ -326,7 +323,7 @@ app.post("/webhook", async (req, res) => {
                                 setTimeout(async () => {
                                     await sendMessage("hindi_remenu", from, [
                                         { payload: "remenu_hin" }
-                                    ]); //hindi Remenu with 500ms delay
+                                    ], "hi"); //hindi Remenu with 500ms delay
                                 }, 500);
                                 break;
                         }
