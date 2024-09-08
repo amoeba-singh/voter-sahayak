@@ -107,11 +107,11 @@ app.post("/webhook", async (req, res) => {
                         }
 
                         switch (buttonPayload) {
-                            case "english":
+                            case "English":
                                 await sendMessage("english_menu", from); // Menu
                                 break;
 
-                            case "hindi":
+                            case "Hindi":
                                 await sendMessage("hindi_menu", from); // Hindi Menu
                                 break;
 
