@@ -179,12 +179,20 @@ app.post("/webhook", async (req, res) => {
 
 
                             case "ps":
-                                responseMessage = "Enter your EPIC No";
+                                // sendMessage("ps_option", from, [
+                                //     { payload: "via_epic" },
+                                //     { payload: "via_phone" }
+                                // ]);
+                                responseMessage = "Enter your EPIC No: ";
                                 userState[from].stage = "awaitingEpic";
                                 break;
 
                             case "ecd":
-                                responseMessage = "Enter your EPIC No";
+                                // sendMessage("ecd_option", from, [
+                                //     { payload: "via_epic" },
+                                //     { payload: "via_phone" }
+                                // ]);
+                                responseMessage = "Enter your EPIC No: ";
                                 userState[from].stage = "detailEpic";
                                 break;
 
@@ -243,7 +251,7 @@ app.post("/webhook", async (req, res) => {
                                 break;
 
                             case "vh":
-                                responseMessage = `1950 (Toll-free Number)\ncomplaints@eci.gov.in\nElection Commission Of India,\nNirvachan Sadan, Ashoka Road,\nNew Delhi 110001`;
+                                responseMessage = `Call: 1950 (Toll-free Number)\nEmail: complaints@eci.gov.in\nElection Commission Of India,\nNirvachan Sadan, Ashoka Road,\nNew Delhi 110001`;
                                 setTimeout(async () => {
                                     await sendMessage("english_remenu", from, [
                                         { payload: "remenu_eng" }
@@ -255,17 +263,17 @@ app.post("/webhook", async (req, res) => {
 
 
                             case "hps":
-                                responseMessage = "कृपया अपना EPIC नंबर दर्ज करें।";
+                                responseMessage = "कृपया अपना EPIC नंबर दर्ज करें: ";
                                 userState[from].stage = "awaitingEpic";
                                 break;
 
                             case "hecd":
-                                responseMessage = "कृपया अपना EPIC नंबर दर्ज करें।";
+                                responseMessage = "कृपया अपना EPIC नंबर दर्ज करें: ";
                                 userState[from].stage = "detailEpic";
                                 break;
 
                             case "hrv":
-                                responseMessage = `Click the below link to register:\n\nhttps://voters.eci.gov.in/form6`;
+                                responseMessage = `पंजीकरण करने के लिए नीचे दिए गए लिंक पर क्लिक करें:\n\nhttps://voters.eci.gov.in/form6`;
                                 setTimeout(async () => {
                                     await sendMessage("hindi_remenu", from, [
                                         { payload: "remenu_hin" }
@@ -319,7 +327,7 @@ app.post("/webhook", async (req, res) => {
                                 break;
 
                             case "hvh":
-                                responseMessage = `1950 (Toll-free Number)\ncomplaints@eci.gov.in\nElection Commission Of India,\nनिर्वाचन सदन, अशोक रोड,\n नई दिल्ली 110001`;
+                                responseMessage = `(Toll-free Number) 1950 पर कॉल करें\ncomplaints@eci.gov.in पर ईमेल करें\nभारत निर्वाचन आयोग,\nनिर्वाचन सदन, अशोक रोड,\n नई दिल्ली 110001`;
                                 setTimeout(async () => {
                                     await sendMessage("hindi_remenu", from, [
                                         { payload: "remenu_hin" }
@@ -333,9 +341,9 @@ app.post("/webhook", async (req, res) => {
                     case "awaitingEpic":
                         userState[from].epicNumber = receivedMessage;
 
-                        responseMessage = "Processing your request, please wait...";
+                        responseMessage = "Processing your request, please wait...\nकृपया प्रतीक्षा करें...";
                         // try {
-                        //     responseMessage = "Processing your request, please wait...";
+                        //     responseMessage = "Processing your request, please wait...\nकृपया प्रतीक्षा करें...";
 
                         //     const backendResponse = await axios.post(
                         //         `http://localhost:${PORT}/epic/data`,
@@ -365,7 +373,7 @@ app.post("/webhook", async (req, res) => {
                         
                         responseMessage = "Processing your request, please wait...";
                         // try {
-                        //     responseMessage = "Processing your request, please wait...";
+                        //     responseMessage = "Processing your request, please wait...\nकृपया प्रतीक्षा करें...";
 
                         //     const backendResponse = await axios.post(
                         //         `http://localhost:${PORT}/epic/data`,
