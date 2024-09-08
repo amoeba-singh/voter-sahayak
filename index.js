@@ -107,7 +107,7 @@ app.post("/webhook", async (req, res) => {
             }
 
             if (!userState[from]) {
-                userState[from] = { stage: "initial" };
+                userState[from] = { stage: "initial", language: "E" };
             }
 
             try {
