@@ -83,15 +83,15 @@ app.post("/webhook", async (req, res) => {
     if (body_param.object) {
         if (body_param.entry && body_param.entry[0].changes && body_param.entry[0].changes[0].value.messages && body_param.entry[0].changes[0].value.messages[0]) {
             let from = body_param.entry[0].changes[0].value.messages[0].from;
-            let receivedMessage = "";
-            let buttonPayload = "";
+            let receivedMessage;
+            let buttonPayload;
             let responseMessage;
 
-            if (body_param.entry[0].changes[0].value.messages[0].text.body) {
+            if (body_param.entry[0].changes[0].value.messages[0]?.text?.body) {
                 receivedMessage = body_param.entry[0].changes[0].value.messages[0].text.body;
                 receivedMessage = receivedMessage.toLowerCase();
             }
-            else if (body_param.entry[0].changes[0].value.messages[0].button.text) {
+            else if (body_param.entry[0].changes[0].value.messages[0]?.button?.text) {
                 buttonPayload = body_param.entry[0].changes[0].value.messages[0].button.text;
             }
 
