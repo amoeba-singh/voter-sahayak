@@ -30,10 +30,8 @@ async function sendText(txt, to) {
                 "Content-Type": "application/json"
             }
         })
-        res.sendStatus(200);
     }
     catch (error) {
-        res.sendStatus(404);
         console.error("Error sending message:", error);
     }
 
@@ -64,9 +62,7 @@ async function sendMessage(templateName, to) {
                 "Content-Type": "application/json"
             }
         })
-        res.sendStatus(200);
     } catch (error) {
-        res.sendStatus(404);
         console.error("Error sending message:", error);
     }
 };
