@@ -11,6 +11,8 @@ app.listen(process.env.PORT || 3000, () => {
     console.log("webhook is working");
 });
 
+
+let preferable_language = "E";
 let ph_no_id = 427623857081465;
 const userState = {};
 
@@ -121,6 +123,7 @@ app.post("/webhook", async (req, res) => {
 
                         switch (buttonPayload) {
                             case "english":
+                                preferable_language = "E";
                                 await sendMessage("english_menu", from, [
                                     { payload: "ps" },
                                     { payload: "ecd" },
@@ -135,6 +138,7 @@ app.post("/webhook", async (req, res) => {
                                 break;
 
                             case "hindi":
+                                preferable_language = "H";
                                 await sendMessage("hindi_menu", from, [
                                     { payload: "hps" },
                                     { payload: "hecd" },
@@ -149,6 +153,7 @@ app.post("/webhook", async (req, res) => {
                                 break;
 
                             case "remenu_eng":
+                                preferable_language = "E";
                                 await sendMessage("english_menu", from, [
                                     { payload: "ps" },
                                     { payload: "ecd" },
@@ -163,6 +168,7 @@ app.post("/webhook", async (req, res) => {
                                 break;
 
                             case "remenu_hin":
+                                preferable_language = "H";
                                 await sendMessage("hindi_menu", from, [
                                     { payload: "hps" },
                                     { payload: "hecd" },
@@ -358,10 +364,19 @@ app.post("/webhook", async (req, res) => {
                         // }
 
                         setTimeout(async () => {
-                            await sendMessage("language_preference", from, [
-                                { payload: "english" },
-                                { payload: "hindi" }
-                            ]); // Remenu
+                            if(preferable_language === "E")
+                            {
+                                await sendMessage("english_remenu", from, [
+                                    { payload: "remenu_eng" }
+                                ]); // Remenu
+                            }
+                            else if(preferable_language === "H")
+                            {
+                                await sendMessage("hindi_remenu", from, [
+                                    { payload: "remenu_hin" }
+                                ]); // Remenu Hindi
+                            }
+                            
                         }, 2000);
 
                         userState[from].stage = "initial";
@@ -388,7 +403,18 @@ app.post("/webhook", async (req, res) => {
                         // }
 
                         setTimeout(async () => {
-                            await sendMessage("language_preference", from); // Remenu
+                            if(preferable_language === "E")
+                                {
+                                    await sendMessage("english_remenu", from, [
+                                        { payload: "remenu_eng" }
+                                    ]); // Remenu
+                                }
+                                else if(preferable_language === "H")
+                                {
+                                    await sendMessage("hindi_remenu", from, [
+                                        { payload: "remenu_hin" }
+                                    ]); // Remenu Hindi
+                                }
                         }, 2000);
 
                         userState[from].stage = "initial";
