@@ -359,6 +359,8 @@ app.post("/webhook", async (req, res) => {
                         // catch (error) {
                         //     responseMessage = "There was an error processing your request. Please try again.";
                         // }
+                        
+                        responseMessage = `Click on the link below to know Polling station.\nमतदान केंद्र जानने के लिए नीचे दिए गए लिंक पर क्लिक करें\n\nhttps://www.eci.gov.in/`;
 
                         setTimeout(async () => {
                             if (userState[from].language === "E") {
@@ -396,6 +398,8 @@ app.post("/webhook", async (req, res) => {
                         // catch (error) {
                         //     responseMessage = "There was an error processing your request. Please try again.";
                         // }
+
+                        responseMessage = `Click on the link below to know EPIC details.\nEPIC विवरण जानने के लिए नीचे दिए गए लिंक पर क्लिक करें\n\nhttps://www.eci.gov.in/`;
 
                         setTimeout(async () => {
                             if (userState[from].language === "E") {
@@ -445,26 +449,6 @@ app.post("/webhook", async (req, res) => {
         res.sendStatus(404);
     }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
