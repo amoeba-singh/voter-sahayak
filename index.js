@@ -408,7 +408,8 @@ app.post("/webhook", async (req, res) => {
                                     { payload: "remenu_hin" }
                                 ], "hi"); // Remenu Hindi
                             }
-                        }, 2000);
+
+                        }, 500);
 
                         userState[from].stage = "initial";
                         break;
