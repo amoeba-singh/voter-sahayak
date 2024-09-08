@@ -39,7 +39,7 @@ async function sendText(txt, to) {
 
 
 // function to send template
-async function sendMessage(templateName, to, buttons = [], lang = "us") {
+async function sendMessage(templateName, to, buttons = [], lang = "en") {
     try {
 
         const buttonArray = buttons.map((button, index) => ({
