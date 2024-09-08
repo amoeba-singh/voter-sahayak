@@ -42,26 +42,43 @@ async function sendText(txt, to) {
 
 
 // function to send template
-async function sendMessage(templateName, to) {
+async function sendMessage(templateName, to, buttons = []) {
     try {
+
+        const buttonArray = buttons.map((button, index) => ({
+            type: "button",
+            sub_type: "quick_reply",
+            index: `${index}`,
+            parameters: [
+                {
+                    type: "payload",
+                    payload: button.payload
+                }
+            ]
+        }));
+
+        const payload = {
+            messaging_product: "whatsapp",
+            to: to,
+            type: "template",
+            template: {
+                name: templateName,
+                language: {
+                    code: "en"
+                },
+                components: buttonArray
+            }
+        };
+
         await axios({
             method: "post",
             url: `https://graph.facebook.com/v20.0/${ph_no_id}/messages?access_token=${token}`,
-            data: {
-                messaging_product: "whatsapp",
-                to: to,
-                type: "template",
-                template: {
-                    name: templateName,
-                    language: {
-                        code: "en"
-                    }
-                }
-            },
+            data: payload,
             headers: {
                 "Content-Type": "application/json"
             }
-        })
+        });
+
     } catch (error) {
         console.error("Error sending message:", error);
     }
@@ -87,8 +104,8 @@ app.post("/webhook", async (req, res) => {
                 receivedMessage = body_param.entry[0].changes[0].value.messages[0].text.body;
                 receivedMessage = receivedMessage.toLowerCase();
             }
-            else if (body_param.entry[0].changes[0].value.messages[0]?.button?.text) {
-                buttonPayload = body_param.entry[0].changes[0].value.messages[0].button.text;
+            else if (body_param.entry[0].changes[0].value.messages[0]?.button?.payload) {
+                buttonPayload = body_param.entry[0].changes[0].value.messages[0].button.payload;
             }
 
             if (!userState[from]) {
@@ -99,24 +116,67 @@ app.post("/webhook", async (req, res) => {
                 switch (userState[from].stage) {
                     case "initial":
                         if (receivedMessage == "hi") {
-                            await sendMessage("welcome_msg", from);
+                            await sendMessage("welcome_msg", from, [
+                                { payload: "english" },
+                                { payload: "hindi" }
+                            ]);
                         }
 
                         switch (buttonPayload) {
-                            case "English":
-                                await sendMessage("english_menu", from); // Menu
+                            case "english":
+                                await sendMessage("english_menu", from, [
+                                    { payload: "ps" },
+                                    { payload: "ecd" },
+                                    { payload: "rv" },
+                                    { payload: "epd" },
+                                    { payload: "epc" },
+                                    { payload: "apps" },
+                                    { payload: "kyo" },
+                                    { payload: "svl" },
+                                    { payload: "vh" }
+                                ]); // Menu
                                 break;
 
-                            case "Hindi":
-                                await sendMessage("hindi_menu", from); // Hindi Menu
+                            case "hindi":
+                                await sendMessage("hindi_menu", from, [
+                                    { payload: "hps" },
+                                    { payload: "hecd" },
+                                    { payload: "hrv" },
+                                    { payload: "hepd" },
+                                    { payload: "hepc" },
+                                    { payload: "happs" },
+                                    { payload: "hkyo" },
+                                    { payload: "hsvl" },
+                                    { payload: "hvh" }
+                                ]); // Hindi Menu
                                 break;
 
                             case "remenu_eng":
-                                await sendMessage("english_menu", from); // Menu
+                                await sendMessage("english_menu", from, [
+                                    { payload: "ps" },
+                                    { payload: "ecd" },
+                                    { payload: "rv" },
+                                    { payload: "epd" },
+                                    { payload: "epc" },
+                                    { payload: "apps" },
+                                    { payload: "kyo" },
+                                    { payload: "svl" },
+                                    { payload: "vh" }
+                                ]); // Menu
                                 break;
 
                             case "remenu_hin":
-                                await sendMessage("hindi_menu", from); // Hindi Menu
+                                await sendMessage("hindi_menu", from, [
+                                    { payload: "hps" },
+                                    { payload: "hecd" },
+                                    { payload: "hrv" },
+                                    { payload: "hepd" },
+                                    { payload: "hepc" },
+                                    { payload: "happs" },
+                                    { payload: "hkyo" },
+                                    { payload: "hsvl" },
+                                    { payload: "hvh" }
+                                ]); // Hindi Menu
                                 break;
 
 
@@ -134,49 +194,63 @@ app.post("/webhook", async (req, res) => {
                             case "rv":
                                 responseMessage = `Click the below link to register:\n\nhttps://voters.eci.gov.in/form6`;
                                 setTimeout(async () => {
-                                    await sendMessage("english_remenu", from); // Remenu with 500ms delay
+                                    await sendMessage("english_remenu", from, [
+                                        { payload: "remenu_eng" }
+                                    ]); // Remenu with 500ms delay
                                 }, 500);
                                 break;
 
                             case "epd":
                                 responseMessage = `Click the below link for deletion of name:\n\nhttps://voters.eci.gov.in/form7`;
                                 setTimeout(async () => {
-                                    await sendMessage("english_remenu", from); // Remenu with 500ms delay
+                                    await sendMessage("english_remenu", from, [
+                                        { payload: "remenu_eng" }
+                                    ]); // Remenu with 500ms delay
                                 }, 500);
                                 break;
 
                             case "epc":
                                 responseMessage = `Click the below link for correction:\n\nhttps://voters.eci.gov.in/form8`;
                                 setTimeout(async () => {
-                                    await sendMessage("english_remenu", from); // Remenu with 500ms delay
+                                    await sendMessage("english_remenu", from, [
+                                        { payload: "remenu_eng" }
+                                    ]); // Remenu with 500ms delay
                                 }, 500);
                                 break;
 
                             case "apps":
                                 responseMessage = `Click the below link to track application:\n\nhttps://voters.eci.gov.in/home/track`;
                                 setTimeout(async () => {
-                                    await sendMessage("english_remenu", from); // Remenu with 500ms delay
+                                    await sendMessage("english_remenu", from, [
+                                        { payload: "remenu_eng" }
+                                    ]); // Remenu with 500ms delay
                                 }, 500);
                                 break;
 
                             case "kyo":
                                 responseMessage = `Click the below link to know your officer:\n\nhttps://electoralsearch.eci.gov.in/pollingstation`;
                                 setTimeout(async () => {
-                                    await sendMessage("english_remenu", from); // Remenu with 500ms delay
+                                    await sendMessage("english_remenu", from, [
+                                        { payload: "remenu_eng" }
+                                    ]); // Remenu with 500ms delay
                                 }, 500);
                                 break;
 
                             case "svl":
                                 responseMessage = `Click the below link to search voter list:\n\nhttps://electoralsearch.eci.gov.in/`;
                                 setTimeout(async () => {
-                                    await sendMessage("english_remenu", from); // Remenu with 500ms delay
+                                    await sendMessage("english_remenu", from, [
+                                        { payload: "remenu_eng" }
+                                    ]); // Remenu with 500ms delay
                                 }, 500);
                                 break;
 
                             case "vh":
                                 responseMessage = `1950 (Toll-free Number)\ncomplaints@eci.gov.in\nElection Commission Of India,\nNirvachan Sadan, Ashoka Road,\nNew Delhi 110001`;
                                 setTimeout(async () => {
-                                    await sendMessage("english_remenu", from); // Remenu with 500ms delay
+                                    await sendMessage("english_remenu", from, [
+                                        { payload: "remenu_eng" }
+                                    ]); // Remenu with 500ms delay
                                 }, 500);
                                 break;
 
@@ -196,49 +270,63 @@ app.post("/webhook", async (req, res) => {
                             case "hrv":
                                 responseMessage = `Click the below link to register:\n\nhttps://voters.eci.gov.in/form6`;
                                 setTimeout(async () => {
-                                    await sendMessage("hindi_remenu", from); // Remenu with 500ms delay
+                                    await sendMessage("hindi_remenu", from, [
+                                        { payload: "remenu_hin" }
+                                    ]); // Remenu with 500ms delay
                                 }, 500);
                                 break;
 
                             case "hepd":
                                 responseMessage = `नाम हटाने के लिए नीचे दिए गए लिंक पर क्लिक करें:\n\nhttps://voters.eci.gov.in/form7`;
                                 setTimeout(async () => {
-                                    await sendMessage("hindi_remenu", from); //hindi Remenu with 500ms delay
+                                    await sendMessage("hindi_remenu", from, [
+                                        { payload: "remenu_hin" }
+                                    ]); //hindi Remenu with 500ms delay
                                 }, 500);
                                 break;
 
                             case "hepc":
                                 responseMessage = `सुधार के लिए नीचे दिए गए लिंक पर क्लिक करें\n\nhttps://voters.eci.gov.in/form8`;
                                 setTimeout(async () => {
-                                    await sendMessage("hindi_remenu", from); //hindi Remenu with 500ms delay
+                                    await sendMessage("hindi_remenu", from, [
+                                        { payload: "remenu_hin" }
+                                    ]); //hindi Remenu with 500ms delay
                                 }, 500);
                                 break;
 
                             case "happs":
                                 responseMessage = `एप्लिकेशन को ट्रैक करने के लिए नीचे दिए गए लिंक पर क्लिक करें:\n\nhttps://voters.eci.gov.in/home/track`;
                                 setTimeout(async () => {
-                                    await sendMessage("hindi_remenu", from); //hindi Remenu with 500ms delay
+                                    await sendMessage("hindi_remenu", from, [
+                                        { payload: "remenu_hin" }
+                                    ]); //hindi Remenu with 500ms delay
                                 }, 500);
                                 break;
 
                             case "hkyo":
                                 responseMessage = `अपने अधिकारी को जानने के लिए नीचे दिए गए लिंक पर क्लिक करें:\n\nhttps://electoralsearch.eci.gov.in/pollingstation`;
                                 setTimeout(async () => {
-                                    await sendMessage("hindi_remenu", from); //hindi Remenu with 500ms delay
+                                    await sendMessage("hindi_remenu", from, [
+                                        { payload: "remenu_hin" }
+                                    ]); //hindi Remenu with 500ms delay
                                 }, 500);
                                 break;
 
                             case "hsvl":
                                 responseMessage = `मतदाता सूची के लिए नीचे दिए गए लिंक को दबाएं:\n\nhttps://electoralsearch.eci.gov.in/`;
                                 setTimeout(async () => {
-                                    await sendMessage("hindi_remenu", from); //hindi Remenu with 500ms delay
+                                    await sendMessage("hindi_remenu", from, [
+                                        { payload: "remenu_hin" }
+                                    ]); //hindi Remenu with 500ms delay
                                 }, 500);
                                 break;
 
                             case "hvh":
                                 responseMessage = `1950 (Toll-free Number)\ncomplaints@eci.gov.in\nElection Commission Of India,\nनिर्वाचन सदन, अशोक रोड,\n नई दिल्ली 110001`;
                                 setTimeout(async () => {
-                                    await sendMessage("hindi_remenu", from); //hindi Remenu with 500ms delay
+                                    await sendMessage("hindi_remenu", from, [
+                                        { payload: "remenu_hin" }
+                                    ]); //hindi Remenu with 500ms delay
                                 }, 500);
                                 break;
                         }
@@ -265,7 +353,10 @@ app.post("/webhook", async (req, res) => {
                         // }
 
                         setTimeout(async () => {
-                            await sendMessage("language_preference", from); // Remenu
+                            await sendMessage("language_preference", from, [
+                                { payload: "english" },
+                                { payload: "hindi" }
+                            ]); // Remenu
                         }, 2000);
 
                         userState[from].stage = "initial";
