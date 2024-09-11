@@ -113,7 +113,7 @@ app.post("/webhook", async (req, res) => {
             try {
                 switch (userState[from].stage) {
                     case "initial":
-                        if (receivedMessage == "hi") {
+                        if (receivedMessage == "hi" || receivedMessage == "hii" || receivedMessage == "hlo" || receivedMessage == "hello" || receivedMessage == "hey") {
                             await sendMessage("welcome_msg", from, [
                                 { payload: "english" },
                                 { payload: "hindi" }
@@ -344,7 +344,7 @@ app.post("/webhook", async (req, res) => {
                     case "awaitingEpic":
                         userState[from].epicNumber = receivedMessage;
 
-                        responseMessage = "Processing your request, please wait...\nकृपया प्रतीक्षा करें...";
+                        // responseMessage = "Processing your request, please wait...\nकृपया प्रतीक्षा करें...";
                         // try {
                         //     responseMessage = "Processing your request, please wait...\nकृपया प्रतीक्षा करें...";
 
@@ -359,7 +359,7 @@ app.post("/webhook", async (req, res) => {
                         // catch (error) {
                         //     responseMessage = "There was an error processing your request. Please try again.";
                         // }
-                        
+
                         responseMessage = `Click on the link below to know Polling station.\nमतदान केंद्र जानने के लिए नीचे दिए गए लिंक पर क्लिक करें\n\nhttps://www.eci.gov.in/`;
 
                         setTimeout(async () => {
@@ -383,7 +383,7 @@ app.post("/webhook", async (req, res) => {
                     case "detailEpic":
                         userState[from].epicNumber = receivedMessage;
 
-                        responseMessage = "Processing your request, please wait...";
+                        // responseMessage = "Processing your request, please wait...";
                         // try {
                         //     responseMessage = "Processing your request, please wait...\nकृपया प्रतीक्षा करें...";
 
