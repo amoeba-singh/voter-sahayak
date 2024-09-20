@@ -57,7 +57,7 @@ async function sendImg(img, to) {
                 to: to,
                 type: "image",
                 image: {
-                    link: "https://res.cloudinary.com/dvjnhfk5u/image/upload/v1726861569/captcha/qpcx7ez65uv7zk5r5ufq.jpg",
+                    link: img,
                     caption: "Solve the captcha"
                 }
             },
@@ -426,6 +426,8 @@ app.post("/webhook", async (req, res) => {
                             );
 
                             const imgpath = captchaResponse.imgpath;
+
+                            console.log("image path: ", imgpath);
                             const captchaId = captchaResponse.captchaId;
                             const cookieJar = captchaResponse.cookieJar;
                             userState[from].captchaId = captchaId;
