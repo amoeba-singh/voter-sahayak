@@ -604,6 +604,7 @@ app.post("/epic/data", async (req, res) => {
             folder: 'captcha'
         });
         const imageDataUrl =  uploadResponse.secure_url;
+        console.log("url: ", imageDataUrl);
         
         // const buffer = Buffer.from(base64Data, 'base64');
         // const imagePath = path.join("/tmp", "captcha.png");
