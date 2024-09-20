@@ -50,7 +50,7 @@ async function sendImg(img, to) {
                 to: to,
                 type: "image",
                 image: {
-                    link: img,
+                    link: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLQUQ6g6NjGqj3qncgsJGpxzzRrL_qDAc1qQ&s",
                     caption: "Solve the captcha"
                 }
             },
