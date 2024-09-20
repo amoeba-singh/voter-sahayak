@@ -1,4 +1,6 @@
 const express = require("express");
+const fs = require("fs");
+const path = require("path");
 const body_parser = require("body-parser");
 const axios = require("axios");
 require('dotenv').config();
@@ -36,6 +38,30 @@ async function sendText(txt, to) {
         console.error("Error sending message:", error);
     }
 
+}
+
+async function sendImg(img, to) {
+    try {
+        await axios({
+            method: "post",
+            url: `https://graph.facebook.com/v20.0/${ph_no_id}/messages?access_token=${token}`,
+            data: {
+                messaging_product: "whatsapp",
+                to: to,
+                type: "image",
+                image: {
+                    link: img,
+                    caption: "Solve the captcha"
+                }
+            },
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+    }
+    catch (error) {
+        console.error("Error sending captcha image:", error);
+    }
 }
 
 
@@ -382,24 +408,46 @@ app.post("/webhook", async (req, res) => {
 
                     case "detailEpic":
                         userState[from].epicNumber = receivedMessage;
+                        try {
+                            responseMessage = "Processing your request, please wait...\nकृपया प्रतीक्षा करें...";
 
-                        // responseMessage = "Processing your request, please wait...";
-                        // try {
-                        //     responseMessage = "Processing your request, please wait...\nकृपया प्रतीक्षा करें...";
+                            const captchaResponse = await axios.post(
+                                `https://voter-sahayak.vercel.app/epic/data`,
+                                {
+                                    epicNumber: userState[from].epicNumber,
+                                }
+                            );
 
-                        //     const backendResponse = await axios.post(
-                        //         `http://localhost:${PORT}/epic/data`,
-                        //         {
-                        //             epicNumber: userState[from].epicNumber,
-                        //         }
-                        //     );
-                        //     responseMessage = `Fullname:\n ${backendResponse.data.Fname}/${backendResponse.data.FnameH}\n Age :  ${backendResponse.data.age}\n Relation: ${backendResponse.data.relation}\n State:${backendResponse.data.state}\n Assembly: ${backendResponse.data.assemblyC} \nPart:${backendResponse.data.Part}\n Part NO: ${backendResponse.data.partNo}`;
-                        // }
-                        // catch (error) {
-                        //     responseMessage = "There was an error processing your request. Please try again.";
-                        // }
+                            const imgpath = captchaResponse.imgpath;
+                            const captchaId = captchaResponse.captchaId;
+                            userState[from].captchaId = captchaId;
+                            responseMessage = "Solve the captcha";
+                            await sendImg(imgpath, from);
+                        }
+                        catch (error) {
+                            responseMessage = "There was an error processing your request. Please try again.";
+                        }
+                        userState[from].stage = "captchaSolve";
+                        break;
 
-                        responseMessage = `Click on the link below to know EPIC details.\nEPIC विवरण जानने के लिए नीचे दिए गए लिंक पर क्लिक करें\n\nhttps://www.eci.gov.in/`;
+
+                    case "captchaSolve":
+                        userState[from].captchaCode = receivedMessage;
+                        try {
+                            responseMessage = "Processing your request, please wait...\nकृपया प्रतीक्षा करें...";
+                            const backendResponse = await axios.post(
+                                `https://voter-sahayak.vercel.app/epic/captcha`,
+                                {
+                                    captchaCode: userState[from].captchaCode,
+                                    epicNumber: userState[from].epicNumber,
+                                    captchaId: userState[from].captchaId
+                                }
+                            );
+                            responseMessage = `Fullname:\n ${backendResponse.data.Fname}/${backendResponse.data.FnameH}\n Age :  ${backendResponse.data.age}\n Relation: ${backendResponse.data.relation}\n State:${backendResponse.data.state}\n Assembly: ${backendResponse.data.assemblyC} \nPart:${backendResponse.data.Part}\n Part NO: ${backendResponse.data.partNo}`;
+                        }
+                        catch (error) {
+                            responseMessage = "There was an error processing your request. Please try again.";
+                        }
 
                         setTimeout(async () => {
                             if (userState[from].language === "E") {
@@ -447,6 +495,107 @@ app.post("/webhook", async (req, res) => {
     else {
         console.log("Object not found in request");
         res.sendStatus(404);
+    }
+});
+
+app.post("/epic/captcha", async (req, res) => {
+    const captchaSolution = req.body.captchaCode;
+    const epicNumber = req.body.epicNumber;
+    const captchaId = req.body.captchaId;
+    if (captchaSolution === "") {
+        res.status(500).send("Error solving captcha");
+        return;
+    }
+    try {
+        const response2 = await axios({
+            method: "post",
+            url: "https://gateway.eci.gov.in/api/v1/elastic/search-by-epic-from-national-display",
+            data: {
+                captchaData: captchaSolution,
+                captchaId: captchaId,
+                epicNumber: epicNumber,
+                isPortal: true,
+                securityKey: "na",
+                stateCd: "U05",
+            },
+            headers: {
+                Cookie: cookieJar,
+                "Content-Type": "application/json",
+                "User-Agent": userAgent,
+                Accept: "*/*",
+                "Accept-Encoding": "gzip, deflate, br",
+                Connection: "keep-alive",
+            },
+            responseType: "json",
+        });
+        const Fname = response2.data[0].content.fullName;
+        const age = response2.data[0].content.age;
+        const relation = response2.data[0].content.relativeFullName;
+        const state = response2.data[0].content.stateName;
+        const district = response2.data[0].content.districtValue;
+        const assemblyC = response2.data[0].content.asmblyName;
+        const Part = response2.data[0].content.partName;
+        const partNo = response2.data[0].content.partSerialNumber;
+        const FnameH = response2.data[0].content.fullNameL1;
+        const ps = response2.data[0].content.partNumber;
+
+        const pollingLocation = extractPollingLocation(response2.data).replace(
+            /\s+/g,
+            " "
+        );
+        const googleMapsLink = generateGoogleMapsLink(ps);
+
+        res.json({
+            Fname,
+            FnameH,
+            age,
+            relation,
+            state,
+            district,
+            assemblyC,
+            Part,
+            partNo,
+            pollingLocation,
+            googleMapsLink,
+        });
+        console.log("Success");
+    }
+    catch (error) {
+        console.error("Error fetching detail:", error);
+        if (error.response) {
+            console.error("Error response:", error.response.data);
+        }
+        res.status(500).send("Error fetching details");
+    }
+});
+
+
+app.post("/epic/data", async (req, res) => {
+    try {
+        const captchaResponse = await axios({
+            method: "get",
+            url: "https://gateway-voters.eci.gov.in/api/v1/captcha-service/generateCaptcha",
+            responseType: "json",
+        });
+
+        const { captcha } = captchaResponse.data;
+        const captchaId = captchaResponse.data.id;
+
+        const base64Data = captcha.replace(/^data:image\/\w+;base64,/, "");
+        const buffer = Buffer.from(base64Data, 'base64');
+        const imagePath = path.join(process.cwd(), "captcha.png");
+        await fs.promises.writeFile(imagePath, buffer);
+
+        res.json({
+            imgpath: imagePath,
+            captchaId: captchaId
+        });
+    } catch (error) {
+        console.error("Error fetching captcha:", error);
+        if (error.response) {
+            console.error("Error response:", error.response.data);
+        }
+        res.status(500).send("Error fetching captcha");
     }
 });
 
