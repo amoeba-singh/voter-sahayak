@@ -3,11 +3,18 @@ const fs = require("fs");
 const path = require("path");
 const body_parser = require("body-parser");
 const axios = require("axios");
+const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
 const app = express().use(body_parser.json());
 
 const token = process.env.TOKEN;
 const myToken = process.env.MYTOKEN;
+
+cloudinary.config({
+    cloud_name: CLOUDNAME,
+    api_key: CLOUDAPI,
+    api_secret: CLOUDAPISECRET
+});
 
 app.listen(process.env.PORT || 3000, () => {
     console.log("webhook is working");
@@ -593,12 +600,14 @@ app.post("/epic/data", async (req, res) => {
 
         
         const base64Data = captcha.replace(/^data:image\/\w+;base64,/, "");
-        const imageDataUrl = `data:image/png;base64,${base64Data}`;
-        console.log("captcha ", captcha);
-        console.log("img url", imageDataUrl);
-        const buffer = Buffer.from(base64Data, 'base64');
-        const imagePath = path.join("/tmp", "captcha.png");
-        await fs.promises.writeFile(imagePath, buffer);
+        const uploadResponse = await cloudinary.uploader.upload(`data:image/png;base64,${base64Data}`, {
+            folder: 'captcha'
+        });
+        const imageDataUrl =  uploadResponse.secure_url;
+        
+        // const buffer = Buffer.from(base64Data, 'base64');
+        // const imagePath = path.join("/tmp", "captcha.png");
+        // await fs.promises.writeFile(imagePath, buffer);
 
         console.log("captcha stored to tmp");
         res.json({
