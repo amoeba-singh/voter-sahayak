@@ -419,16 +419,17 @@ app.post("/webhook", async (req, res) => {
                             );
 
                             const imgpath = captchaResponse.imgpath;
-                            console.log("imagepath is : ", imgpath);
                             const captchaId = captchaResponse.captchaId;
+                            const cookieJar = captchaResponse.cookieJar;
                             userState[from].captchaId = captchaId;
-                            responseMessage = "Solve the captcha";
+                            userState[from].cookie = cookieJar;
+                        
                             await sendImg(imgpath, from);
                             userState[from].stage = "captchaSolve";
                         }
                         catch (error) {
                             userState[from].stage = "initial";
-                            responseMessage = "There was an error processing your request. Please try again.";
+                            responseMessage = "There was an error processing your request to find captcha. Please try again.";
                         }
                         break;
 
@@ -442,7 +443,8 @@ app.post("/webhook", async (req, res) => {
                                 {
                                     captchaCode: userState[from].captchaCode,
                                     epicNumber: userState[from].epicNumber,
-                                    captchaId: userState[from].captchaId
+                                    captchaId: userState[from].captchaId,
+                                    cookieJar: userState[from].cookie
                                 }
                             );
                             responseMessage = `Fullname:\n ${backendResponse.data.Fname}/${backendResponse.data.FnameH}\n Age :  ${backendResponse.data.age}\n Relation: ${backendResponse.data.relation}\n State:${backendResponse.data.state}\n Assembly: ${backendResponse.data.assemblyC} \nPart:${backendResponse.data.Part}\n Part NO: ${backendResponse.data.partNo}`;
@@ -504,6 +506,8 @@ app.post("/epic/captcha", async (req, res) => {
     const captchaSolution = req.body.captchaCode;
     const epicNumber = req.body.epicNumber;
     const captchaId = req.body.captchaId;
+    const userAgent = "ElectionChatbot/1.0 (Node.js/14.x)";
+    const cookieJar = req.body.cookieJar;
     if (captchaSolution === "") {
         res.status(500).send("Error solving captcha");
         return;
@@ -541,12 +545,6 @@ app.post("/epic/captcha", async (req, res) => {
         const FnameH = response2.data[0].content.fullNameL1;
         const ps = response2.data[0].content.partNumber;
 
-        const pollingLocation = extractPollingLocation(response2.data).replace(
-            /\s+/g,
-            " "
-        );
-        const googleMapsLink = generateGoogleMapsLink(ps);
-
         res.json({
             Fname,
             FnameH,
@@ -583,6 +581,13 @@ app.post("/epic/data", async (req, res) => {
         const { captcha } = captchaResponse.data;
         const captchaId = captchaResponse.data.id;
 
+
+        let cookieJar = "cookiesession1=678B2873F1DD2DD8137696AA02376010";
+        if (captchaResponse.headers["set-cookie"]) {
+            cookieJar = `${cookieJar}; ${captchaResponse.headers["set-cookie"][0].split(";")[0]
+                }`;
+        }
+
         const base64Data = captcha.replace(/^data:image\/\w+;base64,/, "");
         const buffer = Buffer.from(base64Data, 'base64');
         const imagePath = path.join("/tmp", "captcha.png");
@@ -591,8 +596,10 @@ app.post("/epic/data", async (req, res) => {
         console.log("captcha stored to tmp");
         res.json({
             imgpath: imagePath,
-            captchaId: captchaId
+            captchaId: captchaId,
+            cookieJar: cookieJar
         });
+
     } catch (error) {
         console.error("Error fetching captcha:", error);
         if (error.response) {
