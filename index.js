@@ -11,9 +11,9 @@ const token = process.env.TOKEN;
 const myToken = process.env.MYTOKEN;
 
 cloudinary.config({
-    cloud_name: CLOUDNAME,
-    api_key: CLOUDAPI,
-    api_secret: CLOUDAPISECRET
+    cloud_name: process.env.CLOUDNAME,
+    api_key: process.env.CLOUDAPI,
+    api_secret: process.env.CLOUDAPISECRET
 });
 
 app.listen(process.env.PORT || 3000, () => {
