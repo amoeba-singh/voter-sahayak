@@ -57,7 +57,7 @@ async function sendImg(img, to) {
                 to: to,
                 type: "image",
                 image: {
-                    link: img,
+                    link: "https://res.cloudinary.com/dvjnhfk5u/image/upload/v1726861569/captcha/qpcx7ez65uv7zk5r5ufq.jpg",
                     caption: "Solve the captcha"
                 }
             },
