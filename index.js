@@ -594,6 +594,8 @@ app.post("/epic/data", async (req, res) => {
         
         const base64Data = captcha.replace(/^data:image\/\w+;base64,/, "");
         const imageDataUrl = `data:image/png;base64,${base64Data}`;
+        console.log("captcha ", captcha);
+        console.log("img url", imageDataUrl);
         const buffer = Buffer.from(base64Data, 'base64');
         const imagePath = path.join("/tmp", "captcha.png");
         await fs.promises.writeFile(imagePath, buffer);
