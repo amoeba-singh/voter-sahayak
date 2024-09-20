@@ -419,6 +419,7 @@ app.post("/webhook", async (req, res) => {
                             );
 
                             const imgpath = captchaResponse.imgpath;
+                            console.log("imagepath is : ", imgpath);
                             const captchaId = captchaResponse.captchaId;
                             userState[from].captchaId = captchaId;
                             responseMessage = "Solve the captcha";
@@ -587,6 +588,7 @@ app.post("/epic/data", async (req, res) => {
         const imagePath = path.join("/tmp", "captcha.png");
         await fs.promises.writeFile(imagePath, buffer);
 
+        console.log("captcha stored to tmp");
         res.json({
             imgpath: imagePath,
             captchaId: captchaId
