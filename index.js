@@ -423,11 +423,12 @@ app.post("/webhook", async (req, res) => {
                             userState[from].captchaId = captchaId;
                             responseMessage = "Solve the captcha";
                             await sendImg(imgpath, from);
+                            userState[from].stage = "captchaSolve";
                         }
                         catch (error) {
+                            userState[from].stage = "initial";
                             responseMessage = "There was an error processing your request. Please try again.";
                         }
-                        userState[from].stage = "captchaSolve";
                         break;
 
 
