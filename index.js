@@ -50,7 +50,7 @@ async function sendImg(img, to) {
                 to: to,
                 type: "image",
                 image: {
-                    link: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLQUQ6g6NjGqj3qncgsJGpxzzRrL_qDAc1qQ&s",
+                    link: img,
                     caption: "Solve the captcha"
                 }
             },
@@ -426,6 +426,8 @@ app.post("/webhook", async (req, res) => {
                         
                             await sendImg(imgpath, from);
                             userState[from].stage = "captchaSolve";
+                            responseMessage = "";
+
                         }
                         catch (error) {
                             userState[from].stage = "initial";
@@ -515,6 +517,7 @@ app.post("/epic/captcha", async (req, res) => {
     try {
         const response2 = await axios({
             method: "post",
+            timeout: 40000,
             url: "https://gateway.eci.gov.in/api/v1/elastic/search-by-epic-from-national-display",
             data: {
                 captchaData: captchaSolution,
@@ -588,14 +591,16 @@ app.post("/epic/data", async (req, res) => {
                 }`;
         }
 
+        
         const base64Data = captcha.replace(/^data:image\/\w+;base64,/, "");
+        const imageDataUrl = `data:image/png;base64,${base64Data}`;
         const buffer = Buffer.from(base64Data, 'base64');
         const imagePath = path.join("/tmp", "captcha.png");
         await fs.promises.writeFile(imagePath, buffer);
 
         console.log("captcha stored to tmp");
         res.json({
-            imgpath: imagePath,
+            imgpath: imageDataUrl,
             captchaId: captchaId,
             cookieJar: cookieJar
         });
